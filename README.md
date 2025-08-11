@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# House Of Legacy SaveEditor
 
-## Getting Started
+A simple and handy tool to make editing your **House of Legacy** save files way easier. Whether you prefer a raw JSON editor or a more user-friendly form editor, this tool’s got you covered!
 
-First, run the development server:
+## About the Game
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+**House of Legacy** on Steam:  
+[https://store.steampowered.com/app/2503770/House_of_Legacy/](https://store.steampowered.com/app/2503770/House_of_Legacy/)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Edit save files in JSON or form mode  
+- No installation needed — just open the website and start editing  
+- Supports all main save file fields for easy tweaks  
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## How to Use
 
-## Learn More
+1. Upload your **House of Legacy** save file  
+2. Choose either JSON editor or Form editor mode  
+3. Make your changes  
+4. Save and load back into the game  
 
-To learn more about Next.js, take a look at the following resources:
+**Sample save file location:**  
+- **Windows:**  
+  `%USERPROFILE%\AppData\LocalLow\HouseofLegacy\Saved\SaveGames`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Linux:**  
+  `/.local/share/Steam/steamapps/compatdata/{game_id}/pfx/drive_c/users/steamuser/AppData/LocalLow/S3Studio/House of Legacy/FW/`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Tech Stack
 
-## Deploy on Vercel
+- Built with Next.js  
+- Styled with shadcn/ui components  
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Contributing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Contributions are welcome! Feel free to open issues or pull requests if you find bugs or want to add features. Let's make this tool better together 😊.
+
+## License
+
+This project is open source. Use and modify freely.
+
+## Support
+
+Questions or help? Join the discussion on Steam or open an issue or discussion here.
+
+## Credits & References
+
+- Steam discussion: [https://steamcommunity.com/app/2503770/discussions/0/599653842304412867/](https://steamcommunity.com/app/2503770/discussions/0/599653842304412867/)  
+- Edit Guide: [https://steamcommunity.com/sharedfiles/filedetails/?id=3482191362](https://steamcommunity.com/sharedfiles/filedetails/?id=3482191362)  
+- And thanks to the House of Legacy community for all the resources and support!
+
+---
+
+Enjoy tweaking your legacy! 🚀
