@@ -52,4 +52,10 @@ Questions or help? Join the discussion on Steam or open an issue or discussion h
 
 ---
 
+## Disclaimer
+
+This tool is provided **as-is**.  
+I do **not take any responsibility** for corrupted or lost save files.  
+Use it at your own risk — always make a backup before editing your save data!
+
 Enjoy tweaking your legacy! 🚀
