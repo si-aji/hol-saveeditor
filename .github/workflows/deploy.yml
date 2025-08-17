@@ -1,9 +1,10 @@
 name: Deploy Application
 
 on:
-  push:
-    branches:
-      - build
+  workflow_run:
+    workflows: ["Build & Deploy Static Site on Release"]
+    types:
+      - completed
 
 jobs:
   pull:
