@@ -91,5 +91,10 @@ export const indexMapping: Record<string, any> = {
   CGNum: {
     coin: 0,
     gold: 1
+  },
+
+  Prop_have: {
+    item: 0,
+    qty: 1
   }
 };

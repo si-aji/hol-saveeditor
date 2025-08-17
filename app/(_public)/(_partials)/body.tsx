@@ -28,6 +28,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 type SaveData = {
 	[key: string]: any; // biar tetap fleksibel untuk key lainnya
@@ -349,8 +350,141 @@ export default function Body() {
 													);
 												}
 
-												if (state.es3?.Prop_have) {
-													let child: ReactNode[] = [];
+												if (state.es3?.Prop_have && 'value' in state.es3.Prop_have) {
+													const child: ReactNode = [
+														...state.es3.Prop_have.value.map((val: any, index: number) => {
+															const foundObject = inventoryItems.find((obj: any) =>
+																obj.items.some((item: any) => item.id.toString() === val[indexMapping.Prop_have.item].toString())
+															);
+
+															return (
+																<div
+																	className="flex flex-row items-center gap-4 border rounded p-4"
+																	key={`inventory-${index}`}
+																>
+																	<div className="flex flex-col gap-1 w-2/3">
+																		<div className=' flex flex-row items-center gap-2'>
+																			<Label>Item</Label>
+																			{foundObject && <Badge>{foundObject.name}</Badge>}
+																		</div>
+
+																		<Select
+																			value={val[indexMapping.Prop_have.item]}
+																			onValueChange={(value) => {
+																				setState((prev: any) => {
+																					if (!prev.es3) return prev;
+										
+																					const Prop_have = [
+																						...prev.es3.Prop_have.value,
+																					];
+																					const data = [...Prop_have[index]]; // clone inner array/object to avoid mutation
+																					data[indexMapping.Prop_have.item] = value;
+										
+																					Prop_have[index] = data;
+										
+																					return {
+																						...prev,
+																						es3: {
+																						...prev.es3,
+																							Prop_have: {
+																								...prev.es3.Prop_have,
+																								value: Prop_have,
+																							},
+																						},
+																					};
+																				});
+																			}}
+																		>
+																			<SelectTrigger className=' w-full'>
+																				<SelectValue placeholder="Inventory Items" />
+																			</SelectTrigger>
+																			<SelectContent>
+																				{inventoryItems.map((val, index) => {
+																					return (
+																						<SelectGroup key={`inventory_${index}-${val.key}`}>
+																							<SelectLabel>{val.name}</SelectLabel>
+																							{val.items.map((ch, index) => {
+																								return <SelectItem value={ch.id.toString()} key={`inventory_${index}-${val.key}_${ch.id}`}>{ch.name}</SelectItem>
+																							})}
+																						</SelectGroup>
+																					)
+																				})}
+																			</SelectContent>
+																		</Select>
+																	</div>
+																	<div className="flex flex-col gap-1 w-1/3">
+																		<Label>QTY</Label>
+																		<Input
+																			type="number"
+																			min={0}
+																			max={100}
+																			placeholder="Item QTY"
+																			value={val[indexMapping.Prop_have.qty]}
+																			onChange={(e) => {
+																				let value = e.target.value.toString();
+																				if (parseInt(value) < 0) {
+																					value = "0";
+																				}
+										
+																				setState((prev: any) => {
+																					if (!prev.es3) return prev;
+										
+																					const Prop_have = [
+																						...prev.es3.Prop_have.value,
+																					];
+																					const data = [...Prop_have[index]]; // clone inner array/object to avoid mutation
+																					data[indexMapping.Prop_have.qty] = value;
+										
+																					Prop_have[index] = data;
+										
+																					return {
+																						...prev,
+																						es3: {
+																							...prev.es3,
+																							Prop_have: {
+																								...prev.es3.Prop_have,
+																								value: Prop_have,
+																							},
+																						},
+																					};
+																				});
+																			}}
+																		/>
+																	</div>
+																</div>
+															)
+														}),
+
+
+														<div
+															className="flex flex-row items-center justify-center gap-4 border rounded p-4"
+															key={`inventory-add_more`}
+														>
+															<Button type='button' onClick={() => {
+																setState((prev: any) => {
+																	if (!prev.es3) return prev;
+
+																	const Prop_have = [...prev.es3.Prop_have.value];
+
+																	// Define the structure of a new item (array or object)
+																	const newItem = ["", ""];
+
+																	Prop_have.push(newItem);
+
+																	return {
+																		...prev,
+																		es3: {
+																			...prev.es3,
+																			Prop_have: {
+																				...prev.es3.Prop_have,
+																				value: Prop_have,
+																			},
+																		},
+																	};
+																});
+															}}>Add more</Button>
+														</div>
+													];
 
 													element.push(
 														<Accordion
@@ -358,6 +492,7 @@ export default function Body() {
 															collapsible
 															className="w-full"
 															key={`game-inventory`}
+															defaultValue='inventory-items'
 														>
 															<AccordionItem value="inventory-items">
 															<AccordionTrigger>
@@ -365,17 +500,13 @@ export default function Body() {
 															</AccordionTrigger>
 															<AccordionContent className="flex flex-col gap-4 text-balance">
 																{(() => {
-																const element: ReactNode[] = [];
+																	if (child) {
+																		return (
+																			<div className=" grid grid-cols-2 gap-4">{child}</div>
+																		);
+																	}
 
-																if (element.length > 0) {
-																	return (
-																	<div className=" grid grid-cols-2 gap-4">
-																		element
-																	</div>
-																	);
-																}
-
-																return <span>No data available</span>;
+																	return <span>No data available</span>;
 																})()}
 															</AccordionContent>
 															</AccordionItem>
