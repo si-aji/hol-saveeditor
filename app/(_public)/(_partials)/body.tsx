@@ -36,13 +36,19 @@ type SaveData = {
 export default function Body() {
 	const [state, setState] = useState<{
 		es3: SaveData | null
-		filename: string,
+		file: {
+			name: string
+			extension: string
+		},
 		processing: boolean,
 
 		formState: 'member_now' | 'member_qu' | 'menke_now' | 'misc' | undefined,
 	}>({
 		es3: null,
-		filename: '',
+		file: {
+			name: '',
+			extension: ''
+		},
 		processing: false,
 
 		formState: undefined,
@@ -50,7 +56,7 @@ export default function Body() {
 
 	// File Upload
 	const handleFileChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-		setState(prev => ({...prev, es3: null, processing: true}))
+		setState(prev => ({...prev, es3: null, processing: true, file: {name: '', extension: ''}}))
 		const file = event.target.files?.[0]
 		if (!file) return
 
@@ -59,6 +65,14 @@ export default function Body() {
 			toast.error("Invalid file format. Please upload a .es3 file.");
 			return;
 		}
+
+		// 🔹 Get full filename
+		const fullName = file.name;
+
+		// 🔹 Split name and extension
+		const dotIndex = fullName.lastIndexOf(".");
+		const nameWithoutExtension = dotIndex !== -1 ? fullName.slice(0, dotIndex) : fullName;
+		const extension = dotIndex !== -1 ? fullName.slice(dotIndex + 1) : "";
 
 		const reader = new FileReader()
 		reader.onload = (e) => {
@@ -76,7 +90,7 @@ export default function Body() {
 					return;
 				}
 
-				setState(prev => ({...prev, es3: jsonData, processing: false}))
+				setState(prev => ({...prev, es3: jsonData, processing: false, file: {name: fullName, extension: extension}}))
 			} catch (error) {
 				toast.error("Invalid JSON format in the file.");
 			}
@@ -92,7 +106,7 @@ export default function Body() {
 	return (
 		<div className=" flex flex-col gap-4 w-full h-full">
 			<div className="">
-				<Tabs defaultValue="form" className="">
+				<Tabs defaultValue="form" className=" gap-10">
 					<div className=" flex flex-row items-center gap-4">
 						<Input type="file" onChange={handleFileChange} />
 
@@ -111,12 +125,12 @@ export default function Body() {
 
 								const a = document.createElement("a");
 								a.href = url;
-								a.download = "save.es3";
+								a.download = `${state.file.name}`;
 								a.click();
 
 								URL.revokeObjectURL(url);
 							}}
-							disabled={!state.es3}
+							disabled={!state.es3 || !state.file.name || !state.file.extension}
 						>
 							Export
 						</Button>
@@ -140,7 +154,7 @@ export default function Body() {
 					{/* Form Editor */}
 					<TabsContent value="form">
 						<div className=" flex flex-col gap-4">
-							<div className=" flex flex-col gap-4 border-b last:border-b-0 py-2 pb-4">
+							<div className=" flex flex-col gap-4 border-b last:border-b-0 pb-4">
 								{/* Header */}
 								<div className=" flex flex-row items-center gap-4 justify-between cursor-pointer" onClick={() => setState(prev => ({...prev, formState: state.formState === 'member_now' ? undefined : 'member_now'}))}>
 									{/* Title */}
@@ -160,7 +174,7 @@ export default function Body() {
 								</div>
 							</div>
 
-							<div className=" flex flex-col gap-4 border-b last:border-b-0 py-2 pb-4">
+							<div className=" flex flex-col gap-4 border-b last:border-b-0 pb-4">
 								{/* Header */}
 								<div className=" flex flex-row items-center gap-4 justify-between cursor-pointer" onClick={() => setState(prev => ({...prev, formState: state.formState === 'member_qu' ? undefined : 'member_qu'}))}>
 									{/* Title */}
@@ -180,7 +194,7 @@ export default function Body() {
 								</div>
 							</div>
 
-							<div className=" flex flex-col gap-4 border-b last:border-b-0 py-2 pb-4">
+							<div className=" flex flex-col gap-4 border-b last:border-b-0 pb-4">
 								{/* Header */}
 								<div className=" flex flex-row items-center gap-4 justify-between cursor-pointer" onClick={() => setState(prev => ({...prev, formState: state.formState === 'menke_now' ? undefined : 'menke_now'}))}>
 									{/* Title */}
@@ -200,7 +214,7 @@ export default function Body() {
 								</div>
 							</div>
 
-							<div className=" flex flex-col gap-4 border-b last:border-b-0 py-2 pb-4">
+							<div className=" flex flex-col gap-4 border-b last:border-b-0 pb-4">
 								{/* Header */}
 								<div className=" flex flex-row items-center gap-4 justify-between cursor-pointer" onClick={() => setState(prev => ({...prev, formState: state.formState === 'misc' ? undefined : 'misc'}))}>
 									{/* Title */}
@@ -226,112 +240,112 @@ export default function Body() {
 												let element: ReactNode[] = [];
 												if (state.es3?.CGNum?.value) {
 													element.push(
-													<div
-														className=" flex flex-col lg:flex-row gap-4"
-														key="game-currency"
-													>
-														<div className=" flex flex-col gap-1 w-4/12">
-														<Label>Coin</Label>
-														<Input
-															type="number"
-															min={0}
-															placeholder="Currency - Coin"
-															value={
-															state.es3.CGNum.value[indexMapping.CGNum.coin]
-															}
-															onChange={(e) => {
-															let value = e.target.value.toString();
+														<div
+															className=" flex flex-col lg:flex-row gap-4"
+															key="game-currency"
+														>
+															<div className=" flex flex-col gap-1 w-4/12">
+																<Label>Coin</Label>
+																<Input
+																	type="number"
+																	min={0}
+																	placeholder="Currency - Coin"
+																	value={
+																		state.es3.CGNum.value[indexMapping.CGNum.coin]
+																	}
+																	onChange={(e) => {
+																		let value = e.target.value.toString();
 
-															setState((prev) => {
-																if (!prev.es3) return prev;
+																		setState((prev) => {
+																			if (!prev.es3) return prev;
 
-																let CGNum = [...prev.es3.CGNum.value];
-																const data = [...CGNum]; // clone inner array/object to avoid mutation
-																data[indexMapping.CGNum.coin] = value;
+																			let CGNum = [...prev.es3.CGNum.value];
+																			const data = [...CGNum]; // clone inner array/object to avoid mutation
+																			data[indexMapping.CGNum.coin] = value;
 
-																return {
-																...prev,
-																es3: {
-																	...prev.es3,
-																	CGNum: {
-																	...prev.es3.CGNum,
-																	value: data,
-																	},
-																},
-																};
-															});
-															}}
-														/>
+																			return {
+																				...prev,
+																				es3: {
+																					...prev.es3,
+																					CGNum: {
+																					...prev.es3.CGNum,
+																					value: data,
+																					},
+																				},
+																			};
+																		});
+																	}}
+																/>
+															</div>
+
+															<div className=" flex flex-col gap-1 w-4/12">
+																<Label>Gold</Label>
+																<Input
+																	type="number"
+																	min={0}
+																	placeholder="Currency - Gold"
+																	value={
+																		state.es3.CGNum.value[indexMapping.CGNum.gold]
+																	}
+																	onChange={(e) => {
+																		let value = e.target.value.toString();
+
+																		setState((prev) => {
+																			if (!prev.es3) return prev;
+
+																			let CGNum = [...prev.es3.CGNum.value];
+																			const data = [...CGNum]; // clone inner array/object to avoid mutation
+																			data[indexMapping.CGNum.gold] = value;
+
+																			return {
+																				...prev,
+																				es3: {
+																					...prev.es3,
+																					CGNum: {
+																					...prev.es3.CGNum,
+																					value: data,
+																					},
+																				},
+																			};
+																		});
+																	}}
+																/>
+															</div>
+
+															<div className=" flex flex-col gap-1 w-4/12">
+																<Label>Prisoner (Slave)</Label>
+																<Input
+																	type="number"
+																	min={0}
+																	placeholder="Currency - Prisoner / Slave"
+																	value={state.es3.NuLiNum?.value ?? 0}
+																	disabled={!state.es3.NuLiNum}
+																	onChange={(e) => {
+																		let value = e.target.value.toString();
+																		if (parseInt(value) > 100) {
+																			value = "100";
+																		} else if (parseInt(value) < 0) {
+																			value = "0";
+																		}
+
+																		setState((prev) => {
+																			if (!prev.es3) return prev;
+
+																			return {
+																				...prev,
+																				es3: {
+																					...prev.es3,
+																					NuLiNum: {
+																					...prev.es3.NuLiNum,
+																					value: value,
+																					},
+																				},
+																			};
+																		});
+																	}}
+																/>
+															</div>
 														</div>
-
-														<div className=" flex flex-col gap-1 w-4/12">
-														<Label>Gold</Label>
-														<Input
-															type="number"
-															min={0}
-															placeholder="Currency - Gold"
-															value={
-															state.es3.CGNum.value[indexMapping.CGNum.gold]
-															}
-															onChange={(e) => {
-															let value = e.target.value.toString();
-
-															setState((prev) => {
-																if (!prev.es3) return prev;
-
-																let CGNum = [...prev.es3.CGNum.value];
-																const data = [...CGNum]; // clone inner array/object to avoid mutation
-																data[indexMapping.CGNum.gold] = value;
-
-																return {
-																...prev,
-																es3: {
-																	...prev.es3,
-																	CGNum: {
-																	...prev.es3.CGNum,
-																	value: data,
-																	},
-																},
-																};
-															});
-															}}
-														/>
-														</div>
-
-														<div className=" flex flex-col gap-1 w-4/12">
-														<Label>Prisoner (Slave)</Label>
-														<Input
-															type="number"
-															min={0}
-															placeholder="Currency - Prisoner / Slave"
-															value={state.es3.NuLiNum?.value ?? 0}
-															disabled={!state.es3.NuLiNum}
-															onChange={(e) => {
-															let value = e.target.value.toString();
-															if (parseInt(value) > 100) {
-																value = "100";
-															} else if (parseInt(value) < 0) {
-																value = "0";
-															}
-
-															setState((prev) => {
-																if (!prev.es3) return prev;
-
-																return {
-																...prev,
-																es3: {
-																	...prev.es3,
-																	NuLiNum: {
-																	...prev.es3.NuLiNum,
-																	value: value,
-																	},
-																},
-																};
-															});
-															}}
-														/>
-														</div>
-													</div>
 													);
 												}
 
@@ -339,32 +353,33 @@ export default function Body() {
 													let child: ReactNode[] = [];
 
 													element.push(
-													<Accordion
-														type="single"
-														collapsible
-														className="w-full"
-													>
-														<AccordionItem value="inventory-items">
-														<AccordionTrigger>
-															Inventory Items
-														</AccordionTrigger>
-														<AccordionContent className="flex flex-col gap-4 text-balance">
-															{(() => {
-															const element: ReactNode[] = [];
+														<Accordion
+															type="single"
+															collapsible
+															className="w-full"
+															key={`game-inventory`}
+														>
+															<AccordionItem value="inventory-items">
+															<AccordionTrigger>
+																Inventory Items
+															</AccordionTrigger>
+															<AccordionContent className="flex flex-col gap-4 text-balance">
+																{(() => {
+																const element: ReactNode[] = [];
 
-															if (element.length > 0) {
-																return (
-																<div className=" grid grid-cols-2 gap-4">
-																	element
-																</div>
-																);
-															}
+																if (element.length > 0) {
+																	return (
+																	<div className=" grid grid-cols-2 gap-4">
+																		element
+																	</div>
+																	);
+																}
 
-															return <span>No data available</span>;
-															})()}
-														</AccordionContent>
-														</AccordionItem>
-													</Accordion>
+																return <span>No data available</span>;
+																})()}
+															</AccordionContent>
+															</AccordionItem>
+														</Accordion>
 													);
 												}
 

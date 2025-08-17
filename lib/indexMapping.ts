@@ -90,6 +90,6 @@ export const indexMapping: Record<string, any> = {
 
   CGNum: {
     coin: 0,
-    gold: 0
+    gold: 1
   }
 };
