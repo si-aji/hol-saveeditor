@@ -40,7 +40,7 @@ export default function SvelteJSONEditor(props: JSONEditorPropsOptional) {
     }
   }, [props]);
 
-  return <div className="vanilla-jsoneditor-react" ref={refContainer}></div>;
+  return <div className="vanilla-jsoneditor-react h-150" ref={refContainer}></div>;
 }
 
 function filterUnchangedProps(
