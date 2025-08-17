@@ -38,5 +38,5 @@ jobs:
             whoami
             pwd
             echo "========= GitHub Action for Fetching Latest Tags"
-            cd /www/wwwroot/build.siaji.com
+            cd /www/wwwroot/hol.siaji.com
             sudo -u www git fetch --tags
