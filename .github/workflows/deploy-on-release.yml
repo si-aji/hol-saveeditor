@@ -2,8 +2,10 @@
 name: Build & Deploy Static Site on Release
 
 on:
-  release:
-    types: [published]  # Triggered when a release is published
+  workflow_run:
+    workflows: ["Goreleaser"]
+    types:
+      - completed
 
 jobs:
   build-and-deploy:
