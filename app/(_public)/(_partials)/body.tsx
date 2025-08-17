@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { ReactNode, useCallback, useEffect, useState } from "react";
 
 // Icons
-import { Loader2Icon, Terminal } from "lucide-react";
+import { Loader2Icon, MinusSquare, PlusSquare, Terminal } from "lucide-react";
 
 // Lib
 import { indexMapping } from '@/lib/indexMapping';
@@ -167,6 +167,7 @@ export default function Body() {
 									</div>
 
 									{/* Icon */}
+									{state.formState === 'member_now' && <MinusSquare/> || <PlusSquare/>}
 								</div>
 
 								{/* Content */}
@@ -187,6 +188,7 @@ export default function Body() {
 									</div>
 
 									{/* Icon */}
+									{state.formState === 'member_qu' && <MinusSquare/> || <PlusSquare/>}
 								</div>
 
 								{/* Content */}
@@ -207,6 +209,7 @@ export default function Body() {
 									</div>
 
 									{/* Icon */}
+									{state.formState === 'menke_now' && <MinusSquare/> || <PlusSquare/>}
 								</div>
 
 								{/* Content */}
