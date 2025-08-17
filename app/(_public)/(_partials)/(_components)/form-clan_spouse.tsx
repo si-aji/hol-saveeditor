@@ -10,7 +10,7 @@ import { indexMapping } from '@/lib/indexMapping';
 
 // Shadcn
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { Alert, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
@@ -27,7 +27,7 @@ function FormClanSpouse({ state, setState }: {
                 <span>Loading</span>
             </div>
         );
-    } else if (state.es3?.Member_qu) {
+    } else if (state.es3?.Member_qu && state.es3.Member_qu.value.length > 0) {
         const element: ReactNode = state.es3.Member_qu.value.map((val: any, index: number) => {
             const generalInfo = val[indexMapping.Member_qu.general.index].split("|");
             const [
@@ -670,7 +670,10 @@ function FormClanSpouse({ state, setState }: {
         });
 
         return <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">{element}</div>;
+    } else if(state.es3?.Member_qu && state.es3.Member_qu.value.length <= 0){
+        return <Alert><AlertDescription>No data available</AlertDescription></Alert>
     }
+
     return (
         <Alert variant="destructive">
             <Terminal />

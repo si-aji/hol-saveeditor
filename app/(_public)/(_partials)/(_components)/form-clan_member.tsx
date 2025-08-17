@@ -10,7 +10,7 @@ import { indexMapping } from '@/lib/indexMapping';
 
 // Shadcn
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { Alert, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
@@ -27,7 +27,7 @@ function FormClanMember({ state, setState }: {
                 <span>Loading</span>
             </div>
         );
-    } else if (state.es3?.Member_now) {
+    } else if (state.es3?.Member_now && state.es3.Member_now.value.length > 0) {
         const element: ReactNode = state.es3.Member_now.value.map((val: any, index: number) => {
             const generalInfo = val[indexMapping.Member_now.general.index].split("|");
             const [
@@ -667,6 +667,8 @@ function FormClanMember({ state, setState }: {
         });
         
         return <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">{element}</div>;
+    } else if(state.es3?.Member_now && state.es3.Member_now.value.length <= 0){
+        return <Alert><AlertDescription>No data available</AlertDescription></Alert>
     }
 
     return (
